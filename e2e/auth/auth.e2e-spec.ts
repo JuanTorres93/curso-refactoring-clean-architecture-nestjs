@@ -2,7 +2,7 @@ import { INestApplication } from "@nestjs/common";
 import request from "supertest";
 import { setupTestEnvironment } from "../setupTestEnvironment";
 
-describe("E2E JWT Sample", () => {
+describe("Auth endpoint", () => {
     let app: INestApplication;
 
     beforeEach(async () => {
@@ -13,7 +13,7 @@ describe("E2E JWT Sample", () => {
         await app.close();
     });
 
-    it("should get a JWT then successfully make a call", async () => {
+    it("should do login, get a JWT then successfully make a call to profile", async () => {
         const loginReq = await request(app.getHttpServer())
             .post("/auth/login")
             .send({ username: "info@xurxodev.com", password: "xurxodev" })
