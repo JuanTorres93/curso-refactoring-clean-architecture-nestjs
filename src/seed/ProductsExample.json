@@ -1,0 +1,42 @@
+[
+    {
+        "sku": "TVS_L55_4k",
+        "title": "LG 55UR78006LK 55\", 4K UHD, Smart TV, HDR10, webOS23, Serie 78, Procesador Alta Potencia, Dolby Digital Plus, Alexa/Google Assistant",
+        "description": "La resolución 4K UHDte permite ver imágenes muy nítidas. Esto hace posible ver claramente los números en la parte trasera de los miembros de tu equipo durante un partido de deportes. Gracias al soporte HDR10+, puedes ver imágenes brillantes con muchos colores. Por ejemplo, en una escena de playa, la luz alrededor de una sombrilla es tan brillante que casi puedes sentirlo, mientras que el color rojo de un cóctel resalta en tu televisor. Debido a la profundidad de color de 10 bits, puedes ver 1 mil millones de colores. En un atardecer, esto te permite ver muchos tonos de naranja y rojo que se mezclan suavemente.",
+        "category": "ele-tvs",
+        "image": "https://m.media-amazon.com/images/I/91yCmSEq0AL._AC_SX679_.jpg",
+        "price": 429.59
+    },
+    {
+        "sku": "SPH_IPH_15",
+        "title": "Apple iPhone 15 Pro (128 GB) - Titanio Negro",
+        "description": "El iPhone 15 Pro tiene un diseño de titanio robusto y ligero de calidad aeroespacial con parte trasera de vidrio mate texturizado. La parte delantera con Ceramic Shield es más resistente que cualquier vidrio de smartphone. Y no se inmuta con las salpicaduras, el agua ni el polvo.",
+        "category": "ele-smartphones",
+        "image": "https://m.media-amazon.com/images/I/812oGW3LDdL._AC_SX679_.jpg",
+        "price": 1039.0
+    },
+    {
+        "sku": "lAP_MAC_PR",
+        "title": "Apple MacBook Pro 16 Pulgadas, Chip M3 MAX",
+        "description": "El M3 Max, con CPU de hasta 16 núcleos y GPU de hasta 40 núcleos, redefine los límites del rendimiento en los procesos más avanzados, como el renderizado de contenido 3D complejo o el desarrollo de modelos transformadores con miles de millones de parámetros.",
+        "category": "ele-laptops",
+        "image": "https://m.media-amazon.com/images/I/6195U0WuDkL._AC_SX679_.jpg",
+        "price": 4089.0
+    },
+    {
+        "sku": "TAB_IPA_PR",
+        "title": "Apple 2022 iPad Pro de 11 Pulgadas (Wi-Fi, 256 GB) - Gris Espacial (4.ª generación)",
+        "description": "Pantalla Liquid Retina de 11 pulgadas con ProMotion, tecnología True Tone y gama cromática amplia (P3)",
+        "category": "ele-tablets",
+        "image": "https://m.media-amazon.com/images/I/81WWJj1RedL._AC_SX679_.jpg",
+        "price": 1029.6
+    },
+    {
+        "sku": "HEA_AIP_MA",
+        "title": "Apple Nuevo AirPods MAX - Gris Espacial",
+        "description": "Transductor dinámico diseñado por Apple que ofrece un sonido de alta fidelidad",
+        "category": "ele-headphones",
+        "image": "https://m.media-amazon.com/images/I/81fSoQd7nsL._AC_SX679_.jpg",
+        "price": 529.35
+    }
+]
