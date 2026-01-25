@@ -1,6 +1,7 @@
 import { INestApplication } from "@nestjs/common";
 import request from "supertest";
 import { setupTestEnvironment } from "../setupTestEnvironment";
+import { loginAndGetToken } from "../common/loginAndGetToken";
 
 describe("Auth endpoint", () => {
     let app: INestApplication;
@@ -14,12 +15,7 @@ describe("Auth endpoint", () => {
     });
 
     it("should do login, get a JWT then successfully make a call to profile", async () => {
-        const loginReq = await request(app.getHttpServer())
-            .post("/auth/login")
-            .send({ username: "info@xurxodev.com", password: "xurxodev" })
-            .expect(200);
-
-        const token = loginReq.body.access_token;
+        const token = await loginAndGetToken(app);
 
         return request(app.getHttpServer())
             .get("/auth/profile")
