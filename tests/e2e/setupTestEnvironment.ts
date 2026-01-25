@@ -1,15 +1,15 @@
-import { AuthModule } from "../src/auth/auth.module";
-import { CategoriesModule } from "../src/categories/categories.module";
-import { ProductsModule } from "../src/products/products.module";
-import { UsersModule } from "../src/users/users.module";
+import { AuthModule } from "../../src/auth/auth.module";
+import { CategoriesModule } from "../../src/categories/categories.module";
+import { ProductsModule } from "../../src/products/products.module";
+import { UsersModule } from "../../src/users/users.module";
 import { Test } from "@nestjs/testing";
 import { TypeOrmModule } from "@nestjs/typeorm";
-import { AppController } from "../src/app/app.controller";
+import { AppController } from "../../src/app/app.controller";
 import { DataSource } from "typeorm";
-import { seedCategories, seedUser } from "../src/seed/seed.data";
-import { Product } from "../src/products/products.entity";
-import { User } from "../src/users/user.entity";
-import { Category } from "../src/categories/categories.entity";
+import { seedCategories, seedUser } from "../../src/seed/seed.data";
+import { Product } from "../../src/products/products.entity";
+import { User } from "../../src/users/user.entity";
+import { Category } from "../../src/categories/categories.entity";
 import { ValidationPipe } from "@nestjs/common";
 
 export const setupTestEnvironment = async () => {
