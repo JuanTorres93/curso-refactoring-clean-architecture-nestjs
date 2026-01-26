@@ -376,6 +376,46 @@ describe("Products endpoint", () => {
                 });
         });
     });
+
+    describe("DELETE", () => {
+        beforeEach(async () => {
+            const token = await loginAndGetToken(app);
+
+            await request(app.getHttpServer())
+                .post("/products")
+                .set("Authorization", "Bearer " + token)
+                .send(product);
+        });
+
+        it("should delete successfully make a call to DELETE product", async () => {
+            const token = await loginAndGetToken(app);
+
+            return request(app.getHttpServer())
+                .delete(`/products/${product.sku}`)
+                .set("Authorization", "Bearer " + token)
+                .expect(200);
+        });
+
+        it("should receive unauthorized error to call product without token", async () => {
+            return await request(app.getHttpServer()).delete(`/products/${product.sku}`).expect(401);
+        });
+
+        it("should receive unauthorized error to call DELETE product with invalid token", async () => {
+            return await request(app.getHttpServer())
+                .delete(`/products/${product.sku}`)
+                .set("Authorization", "Bearer " + "invalid token")
+                .expect(401);
+        });
+
+        it("should return 404 for non existing product", async () => {
+            const token = await loginAndGetToken(app);
+
+            return request(app.getHttpServer())
+                .delete(`/products/invalid-sku`)
+                .set("Authorization", "Bearer " + token)
+                .expect(404);
+        });
+    });
 });
 
 const product = {
