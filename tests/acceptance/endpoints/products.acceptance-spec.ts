@@ -88,6 +88,148 @@ describe("Products endpoint", () => {
                 .expect(404);
         });
     });
+
+    describe("POST", () => {
+        it("should create a product successfully when calling POST products", async () => {
+            const token = await loginAndGetToken(app);
+
+            return request(app.getHttpServer())
+                .post(`/products`)
+                .set("Authorization", "Bearer " + token)
+                .send(product)
+                .expect(201)
+                .expect(({ body }) => {
+                    expect(body.sku).toBe(product.sku);
+                    expect(body.title).toBe(product.title);
+                    expect(body.description).toBe(product.description);
+                    expect(body.category).toBe(product.category);
+                    expect(body.image).toBe(product.image);
+                    expect(body.price).toBe(product.price);
+                    expect(body.createdDate).toBeDefined();
+                    expect(body.lastUpdated).toBeDefined();
+                });
+        });
+
+        it("should receive unauthorized error to call product without token", async () => {
+            return await request(app.getHttpServer()).post(`/products`).send(product).expect(401);
+        });
+
+        it("should receive unauthorized error to call POST product with invalid token", async () => {
+            return await request(app.getHttpServer())
+                .post(`/products`)
+                .send(product)
+                .set("Authorization", "Bearer " + "invalid token")
+                .expect(401);
+        });
+
+        it("should receive bad request error when creating a product with duplicated sku", async () => {
+            const token = await loginAndGetToken(app);
+            await request(app.getHttpServer())
+                .post(`/products`)
+                .set("Authorization", "Bearer " + token)
+                .send(product);
+
+            return request(app.getHttpServer())
+                .post(`/products`)
+                .set("Authorization", "Bearer " + token)
+                .send(product)
+                .expect(400)
+                .expect(({ body }) => {
+                    expect(body.message).toBe("Duplicate SKU");
+                });
+        });
+
+        it("should receive bad request error when creating a product with empty sku", async () => {
+            const token = await loginAndGetToken(app);
+
+            return request(app.getHttpServer())
+                .post(`/products`)
+                .set("Authorization", "Bearer " + token)
+                .send({ ...product, sku: "" })
+                .expect(400)
+                .expect(({ body }) => {
+                    expect(body.message[0]).toBe("sku should not be empty");
+                });
+        });
+
+        it("should receive bad request error when creating a product with invalid sku", async () => {
+            const token = await loginAndGetToken(app);
+
+            return request(app.getHttpServer())
+                .post(`/products`)
+                .set("Authorization", "Bearer " + token)
+                .send({ ...product, sku: "not-valid" })
+                .expect(400)
+                .expect(({ body }) => {
+                    expect(body.message[0]).toBe("Invalid SKU format (must be ###_###_##)");
+                });
+        });
+
+        it("should receive bad request error when creating a product with empty title", async () => {
+            const token = await loginAndGetToken(app);
+
+            return request(app.getHttpServer())
+                .post(`/products`)
+                .set("Authorization", "Bearer " + token)
+                .send({ ...product, title: "" })
+                .expect(400)
+                .expect(({ body }) => {
+                    expect(body.message[0]).toBe("title should not be empty");
+                });
+        });
+
+        it("should receive bad request error when creating a product with invalid URL image", async () => {
+            const token = await loginAndGetToken(app);
+
+            return request(app.getHttpServer())
+                .post(`/products`)
+                .set("Authorization", "Bearer " + token)
+                .send({ ...product, image: "invalid-url" })
+                .expect(400)
+                .expect(({ body }) => {
+                    expect(body.message[0]).toBe("image must be a URL address");
+                });
+        });
+
+        it("should receive bad reques error when creating a product with non existing category", async () => {
+            const token = await loginAndGetToken(app);
+
+            return request(app.getHttpServer())
+                .post(`/products`)
+                .set("Authorization", "Bearer " + token)
+                .send({ ...product, category: "non-existing-category" })
+                .expect(400)
+                .expect(({ body }) => {
+                    expect(body.message).toBe("Category not found");
+                });
+        });
+
+        it("should receive bad request error when creating a product with price greater than 9999.99", async () => {
+            const token = await loginAndGetToken(app);
+
+            return request(app.getHttpServer())
+                .post(`/products`)
+                .set("Authorization", "Bearer " + token)
+                .send({ ...product, price: 30000 })
+                .expect(400)
+                .expect(({ body }) => {
+                    expect(body.message[0]).toBe("price must not be greater than 9999.99");
+                });
+        });
+
+        it("should receive bad request error when creating a product with price lower than 0", async () => {
+            const token = await loginAndGetToken(app);
+
+            return request(app.getHttpServer())
+                .post(`/products`)
+                .set("Authorization", "Bearer " + token)
+                .send({ ...product, price: -10 })
+                .expect(400)
+                .expect(({ body }) => {
+                    expect(body.message[0]).toBe("price must not be less than 0");
+                });
+        });
+    });
 });
 
 const product = {

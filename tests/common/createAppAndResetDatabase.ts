@@ -20,9 +20,9 @@ export const createAppAndResetDatabase = async (typeORMModule: DynamicModule) =>
 
     const app = modRef.createNestApplication();
 
-    await app.init();
-
     app.useGlobalPipes(new ValidationPipe());
+
+    await app.init();
 
     const dataSource = app.get(DataSource);
 
