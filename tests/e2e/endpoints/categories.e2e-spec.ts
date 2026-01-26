@@ -1,7 +1,7 @@
 import { INestApplication } from "@nestjs/common";
 import request from "supertest";
 import { setupTestEnvironment } from "../common/setupTestEnvironment";
-import { loginAndGetToken } from "../common/loginAndGetToken";
+import { loginAndGetToken } from "../../common/loginAndGetToken";
 
 describe("Categories endpoint", () => {
     let app: INestApplication;
