@@ -1,10 +1,10 @@
-name: Application unit testing
+name: Application testing
 on:
     push:
     workflow_dispatch:
 jobs:
-    unit-tests:
-        name: unit tests
+    tests:
+        name: tests
         runs-on: ubuntu-latest
         steps:
             - name: Checkout repository
@@ -23,6 +23,9 @@ jobs:
 
             - name: Run unit tests
               run: yarn test
+
+            - name: Run acceptance tests
+              run: yarn test:acceptance
 
             - name: Build typescript
               run: npx tsc
