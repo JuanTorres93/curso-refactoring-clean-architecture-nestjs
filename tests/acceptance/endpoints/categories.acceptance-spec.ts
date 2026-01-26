@@ -45,4 +45,37 @@ describe("Categories endpoint", () => {
             .set("Authorization", "Bearer " + "invalid token")
             .expect(401);
     });
+
+    it("should do login, get a JWT then successfully make a call to GET category", async () => {
+        const token = await loginAndGetToken(app);
+
+        return request(app.getHttpServer())
+            .get("/categories/ele-tvs")
+            .set("Authorization", "Bearer " + token)
+            .expect(200)
+            .expect(({ body }) => {
+                expect(body.categoryUid).toBe("ele-tvs");
+                expect(body.name).toBe("TVs");
+            });
+    });
+
+    it("should receive unauthorized error to call category without token", async () => {
+        return await request(app.getHttpServer()).get("/categories/ele-tvs").expect(401);
+    });
+
+    it("should receive unauthorized error to call GET category with invalid token", async () => {
+        return await request(app.getHttpServer())
+            .get("/categories/ele-tvs")
+            .set("Authorization", "Bearer " + "invalid token")
+            .expect(401);
+    });
+
+    it("should receive not found error to call GET category for non-existing category", async () => {
+        const token = await loginAndGetToken(app);
+
+        return request(app.getHttpServer())
+            .get("/categories/non-existing-category")
+            .set("Authorization", "Bearer " + token)
+            .expect(404);
+    });
 });

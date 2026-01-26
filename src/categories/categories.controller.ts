@@ -1,4 +1,4 @@
-import { Controller, Get, Param } from "@nestjs/common";
+import { Controller, Get, NotFoundException, Param } from "@nestjs/common";
 import { CategoriesService } from "./categories.service";
 import { plainToInstance } from "class-transformer";
 import { CategoryResponseDto } from "./dto/response.category.dto";
@@ -17,6 +17,10 @@ export class CategoriesController {
     @Get(":sku")
     async findOne(@Param("sku") sku: string): Promise<CategoryResponseDto> {
         const category = await this.categoriesService.findOne(sku);
+
+        if (!category) {
+            throw new NotFoundException();
+        }
 
         return plainToInstance(CategoryResponseDto, category, { excludeExtraneousValues: true });
     }
