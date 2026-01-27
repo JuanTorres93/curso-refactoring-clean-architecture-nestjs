@@ -1,4 +1,7 @@
-import { Category } from "../categories.entity";
+import { Category } from "./categories.entity";
+
+export class DomainError extends Error {}
+export class ResourceNotFoundError extends DomainError {}
 
 export interface CategoriesRepository {
     get(): Promise<Category[]>;

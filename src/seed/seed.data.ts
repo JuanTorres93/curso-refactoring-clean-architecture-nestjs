@@ -1,6 +1,6 @@
 import { DataSource } from "typeorm";
 import { User } from "../users/user.entity";
-import { Category } from "../categories/categories.entity";
+import { CategoryDB } from "../categories/data/categories.db";
 
 export async function seedData(dataSource: DataSource): Promise<void> {
     try {
@@ -39,7 +39,7 @@ export async function seedUser(dataSource: DataSource) {
 }
 
 export async function seedCategories(dataSource: DataSource) {
-    const categoryRepository = dataSource.getRepository(Category);
+    const categoryRepository = dataSource.getRepository(CategoryDB);
 
     const tvCategory = categoryRepository.create({
         categoryUid: "ele-tvs",

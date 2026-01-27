@@ -1,24 +1,23 @@
 import { Module } from "@nestjs/common";
 import { getRepositoryToken, TypeOrmModule } from "@nestjs/typeorm";
-import { Category } from "./categories.entity";
 import { CategoriesController } from "./categories.controller";
 import { CategoriesService } from "./categories.service";
+import { CategoryDB } from "./data/categories.db";
 import { CategoryORMRepository } from "./data/categories.orm.repository";
-import { Repository } from "typeorm";
 
 @Module({
-    imports: [TypeOrmModule.forFeature([Category])],
+    imports: [TypeOrmModule.forFeature([CategoryDB])],
     providers: [
         {
             provide: CategoryORMRepository,
-            useFactory: (repository: Repository<Category>) => {
-                return new CategoryORMRepository(repository);
+            useFactory: categoryRepository => {
+                return new CategoryORMRepository(categoryRepository);
             },
-            inject: [getRepositoryToken(Category)],
+            inject: [getRepositoryToken(CategoryDB)],
         },
         {
             provide: CategoriesService,
-            useFactory: (categoryRepository: CategoryORMRepository) => {
+            useFactory: categoryRepository => {
                 return new CategoriesService(categoryRepository);
             },
             inject: [CategoryORMRepository],

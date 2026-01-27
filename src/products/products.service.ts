@@ -4,8 +4,8 @@ import { Repository } from "typeorm";
 import { CreateProductDto } from "./dto/create.product.dto";
 import { Product } from "./products.entity";
 import { UpdateProductDto } from "./dto/update.product.dto";
-import { Category } from "../categories/categories.entity";
 import { ProductsError } from "./products.error";
+import { CategoryDB } from "../categories/data/categories.db";
 
 @Injectable()
 export class ProductsService {
@@ -13,8 +13,8 @@ export class ProductsService {
         @InjectRepository(Product)
         private readonly productsRepository: Repository<Product>,
 
-        @InjectRepository(Category)
-        private readonly categoriesRepository: Repository<Category>
+        @InjectRepository(CategoryDB)
+        private readonly categoriesRepository: Repository<CategoryDB>
     ) {}
 
     async create(createProductDto: CreateProductDto): Promise<Product> {

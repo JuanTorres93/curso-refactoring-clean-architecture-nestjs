@@ -1,4 +1,4 @@
-import { Category } from "./categories.entity";
+import { Category } from "./domain/categories.entity";
 import { CategoriesRepository } from "./domain/categories.repository";
 
 export class CategoriesService {

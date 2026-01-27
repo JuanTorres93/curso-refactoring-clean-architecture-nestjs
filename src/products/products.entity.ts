@@ -1,5 +1,5 @@
 import { Column, Entity, Index, ManyToOne, PrimaryGeneratedColumn } from "typeorm";
-import { Category } from "../categories/categories.entity";
+import { CategoryDB } from "../categories/data/categories.db";
 
 @Entity("products")
 export class Product {
@@ -16,10 +16,10 @@ export class Product {
     @Column({ type: "varchar", length: 1000 })
     description: string;
 
-    @ManyToOne(() => Category, category => category.products, {
+    @ManyToOne(() => CategoryDB, category => category.products, {
         cascade: false,
     })
-    category: Category;
+    category: CategoryDB;
 
     @Column()
     image: string;
