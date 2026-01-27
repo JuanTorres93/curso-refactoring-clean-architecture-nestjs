@@ -73,7 +73,8 @@
             ".+\\.(t|j)s$": "ts-jest"
         },
         "coverageDirectory": "../coverage",
-        "testEnvironment": "node"
+        "testEnvironment": "node",
+        "passWithNoTests": true
     },
     "engines": {
         "node": ">=20.0.0"
