@@ -19,7 +19,7 @@
         "test:debug": "node --inspect-brk -r tsconfig-paths/register -r ts-node/register node_modules/.bin/jest --runInBand",
         "test:e2e": "jest --config ./tests/e2e/jest-e2e.json",
         "test:acceptance": "jest --config ./tests/acceptance/jest-acceptance.json",
-        "test:acceptance:watch": "jest --config ./tests/acceptance/jest-acceptance.json --watch",
+        "test:acceptance:watch": "jest --config ./tests/acceptance/jest-acceptance.json --watchAll",
         "seed": "ts-node -r tsconfig-paths/register ./src/seed/seed.helper.ts",
         "prepare": "husky"
     },

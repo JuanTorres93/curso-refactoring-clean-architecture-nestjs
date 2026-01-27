@@ -8,15 +8,15 @@ export class CategoriesController {
     constructor(private readonly categoriesService: CategoriesService) {}
 
     @Get()
-    async findAll(): Promise<CategoryResponseDto[]> {
-        const categories = await this.categoriesService.findAll();
+    async get(): Promise<CategoryResponseDto[]> {
+        const categories = await this.categoriesService.get();
 
         return plainToInstance(CategoryResponseDto, categories, { excludeExtraneousValues: true });
     }
 
     @Get(":sku")
-    async findOne(@Param("sku") sku: string): Promise<CategoryResponseDto> {
-        const category = await this.categoriesService.findOne(sku);
+    async getById(@Param("sku") sku: string): Promise<CategoryResponseDto> {
+        const category = await this.categoriesService.getById(sku);
 
         if (!category) {
             throw new NotFoundException();

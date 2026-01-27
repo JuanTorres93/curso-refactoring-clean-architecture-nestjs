@@ -1,9 +1,12 @@
 {
     "moduleFileExtensions": ["ts", "tsx", "js", "json"],
+    "rootDir": "../../",
     "transform": {
         "^.+\\.tsx?$": "ts-jest"
     },
     "testRegex": "/tests/acceptance/.*\\.(acceptance-test|acceptance-spec).(ts|tsx|js)$",
     "collectCoverageFrom": ["src/**/*.{js,jsx,tsx,ts}", "!**/node_modules/**", "!**/vendor/**"],
-    "coverageReporters": ["json", "lcov"]
+    "coverageReporters": ["json", "lcov"],
+    "roots": ["<rootDir>/src/", "<rootDir>/tests/acceptance"],
+    "watchPathIgnorePatterns": ["<rootDir>/node_modules/", "<rootDir>/dist/"]
 }
