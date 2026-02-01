@@ -1,24 +1,28 @@
 import { Controller, Get, NotFoundException, Param } from "@nestjs/common";
-import { CategoriesService } from "./categories.service";
 import { plainToInstance } from "class-transformer";
-import { CategoryResponseDto } from "./dto/response.category.dto";
 import { ResourceNotFoundError } from "./domain/categories.repository";
+import { GetCategoriesUseCase } from "./domain/get.categories.usecase";
+import { GetCategoryUseCase } from "./domain/get.category.usecase";
+import { CategoryResponseDto } from "./dto/response.category.dto";
 
 @Controller("categories")
 export class CategoriesController {
-    constructor(private readonly categoriesService: CategoriesService) {}
+    constructor(
+        private readonly getCategoriesUseCase: GetCategoriesUseCase,
+        private readonly getCategoryUseCase: GetCategoryUseCase
+    ) {}
 
     @Get()
     async get(): Promise<CategoryResponseDto[]> {
-        const categories = await this.categoriesService.get();
+        const categories = await this.getCategoriesUseCase.execute();
 
         return plainToInstance(CategoryResponseDto, categories, { excludeExtraneousValues: true });
     }
 
-    @Get(":sku")
-    async getById(@Param("sku") sku: string): Promise<CategoryResponseDto> {
+    @Get(":categoryUid")
+    async getById(@Param("categoryUid") categoryUid: string): Promise<CategoryResponseDto> {
         try {
-            const category = await this.categoriesService.getById(sku);
+            const category = await this.getCategoryUseCase.execute(categoryUid);
 
             return plainToInstance(CategoryResponseDto, category, { excludeExtraneousValues: true });
         } catch (error) {
