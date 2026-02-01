@@ -1,8 +1,8 @@
 import { Controller, Get, NotFoundException, Param } from "@nestjs/common";
 import { plainToInstance } from "class-transformer";
-import { ResourceNotFoundError } from "./domain/categories.repository";
-import { GetCategoriesUseCase } from "./domain/get.categories.usecase";
-import { GetCategoryUseCase } from "./domain/get.category.usecase";
+import { ResourceNotFoundError } from "../domain/categories.repository";
+import { GetCategoriesUseCase } from "../domain/get.categories.usecase";
+import { GetCategoryUseCase } from "../domain/get.category.usecase";
 import { CategoryResponseDto } from "./dto/response.category.dto";
 
 @Controller("categories")
