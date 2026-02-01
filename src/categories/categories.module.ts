@@ -1,5 +1,5 @@
 import { Module } from "@nestjs/common";
-import { getRepositoryToken, TypeOrmModule } from "@nestjs/typeorm";
+import { TypeOrmModule } from "@nestjs/typeorm";
 import { CategoriesController } from "./categories.controller";
 import { CategoryDB } from "./data/categories.db";
 import { CategoryORMRepository } from "./data/categories.orm.repository";
@@ -11,10 +11,9 @@ import { GetCategoryUseCase } from "./domain/get.category.usecase";
     providers: [
         {
             provide: CategoryORMRepository,
-            useFactory: categoryRepository => {
-                return new CategoryORMRepository(categoryRepository);
+            useFactory: () => {
+                return new CategoryORMRepository();
             },
-            inject: [getRepositoryToken(CategoryDB)],
         },
         {
             provide: GetCategoriesUseCase,
