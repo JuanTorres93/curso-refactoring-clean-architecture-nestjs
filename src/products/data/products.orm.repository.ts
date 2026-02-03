@@ -32,6 +32,10 @@ export class ProductORMRepository implements ProductsRepository {
         return this.mapToEntity(productDB);
     }
 
+    async delete(sku: string): Promise<void> {
+        await this.productsRepository.delete({ sku });
+    }
+
     private mapToEntity(dbProduct: ProductDB): Product {
         return new Product({
             sku: dbProduct.sku,

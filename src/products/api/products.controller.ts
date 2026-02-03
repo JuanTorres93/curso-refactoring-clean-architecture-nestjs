@@ -98,14 +98,14 @@ export class ProductsController {
     }
 
     @Delete(":sku")
-    async remove(@Param("sku") sku: string): Promise<{ message: string }> {
+    async delete(@Param("sku") sku: string): Promise<{ message: string }> {
         const product = await this.productsService.findOne(sku);
 
         if (!product) {
             throw new NotFoundException();
         }
 
-        await this.productsService.remove(sku);
+        await this.productsService.delete(sku);
 
         return { message: `Product with SKU ${sku} has been successfully deleted` };
     }
