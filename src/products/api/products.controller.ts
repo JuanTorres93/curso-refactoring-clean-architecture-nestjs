@@ -20,11 +20,13 @@ import { ProductsError } from "../products.error";
 import { ProductsService } from "../products.service";
 import { ProductResponseDtoOld } from "../dto/response.product.dto";
 import { ProductResponseDto } from "./dto/response.product.dto";
+import { GetProductBySkuUseCase } from "../domain/get.product.bySku.usecase";
 
 @Controller("products")
 export class ProductsController {
     constructor(
         private readonly getProductsUseCase: GetProductsUseCase,
+        private readonly getProductBySkuUseCase: GetProductBySkuUseCase,
 
         /**
          * @deprecated use use cases instead of service directly
@@ -42,7 +44,7 @@ export class ProductsController {
     @Get(":sku")
     async getBySku(@Param("sku") sku: string): Promise<ProductResponseDto> {
         try {
-            const product = await this.productsService.getBySku(sku);
+            const product = await this.getProductBySkuUseCase.execute(sku);
 
             return plainToInstance(ProductResponseDto, product, { excludeExtraneousValues: true });
         } catch (error) {
