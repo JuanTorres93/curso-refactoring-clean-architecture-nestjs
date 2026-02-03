@@ -1,30 +1,34 @@
-import { Injectable } from "@nestjs/common";
-import { InjectRepository } from "@nestjs/typeorm";
 import { Repository } from "typeorm";
-import { CreateProductDto } from "./dto/create.product.dto";
-import { Product } from "./products.entity";
-import { UpdateProductDto } from "./dto/update.product.dto";
-import { ProductsError } from "./products.error";
 import { CategoryDB } from "../categories/data/categories.db";
+import { ProductsRepository } from "./domain/products.repository";
+import { CreateProductDto } from "./dto/create.product.dto";
+import { UpdateProductDto } from "./dto/update.product.dto";
+import { Product } from "./products.entity";
+import { ProductsError } from "./products.error";
 
-@Injectable()
 export class ProductsService {
     constructor(
-        @InjectRepository(Product)
-        private readonly productsRepository: Repository<Product>,
+        private readonly productsRepository: ProductsRepository,
 
-        @InjectRepository(CategoryDB)
-        private readonly categoriesRepository: Repository<CategoryDB>
+        /**
+         * @deprecated use categoriesRepository instead
+         */
+        private readonly productsORMRepository: Repository<Product>,
+
+        /**
+         * @deprecated use categoriesRepository instead
+         */
+        private readonly categoriesORMRepository: Repository<CategoryDB>
     ) {}
 
     async create(createProductDto: CreateProductDto): Promise<Product> {
-        const category = await this.categoriesRepository.findOneBy({ categoryUid: createProductDto.category });
+        const category = await this.categoriesORMRepository.findOneBy({ categoryUid: createProductDto.category });
 
         if (!category) {
             throw new ProductsError("Category not found");
         }
 
-        const existedProduct = await this.productsRepository.findOneBy({ sku: createProductDto.sku });
+        const existedProduct = await this.productsORMRepository.findOneBy({ sku: createProductDto.sku });
 
         if (existedProduct) {
             throw new ProductsError("Duplicate SKU");
@@ -41,23 +45,23 @@ export class ProductsService {
         product.createdDate = new Date();
         product.lastUpdated = new Date();
 
-        return this.productsRepository.save(product);
+        return this.productsORMRepository.save(product);
     }
 
     async update(sku: string, updateProductDto: UpdateProductDto): Promise<Product> {
-        const category = await this.categoriesRepository.findOneBy({ categoryUid: updateProductDto.category });
+        const category = await this.categoriesORMRepository.findOneBy({ categoryUid: updateProductDto.category });
 
         if (!category) {
             throw new ProductsError("Category not found");
         }
 
-        const existedProduct = await this.productsRepository.findOneBy({ sku: updateProductDto.sku });
+        const existedProduct = await this.productsORMRepository.findOneBy({ sku: updateProductDto.sku });
 
         if (existedProduct && sku != updateProductDto.sku) {
             throw new ProductsError("Duplicate SKU");
         }
 
-        const product = await this.productsRepository.findOneBy({ sku: sku });
+        const product = await this.productsORMRepository.findOneBy({ sku: sku });
 
         product.sku = updateProductDto.sku;
         product.title = updateProductDto.title;
@@ -67,18 +71,18 @@ export class ProductsService {
         product.price = updateProductDto.price;
         product.lastUpdated = new Date();
 
-        return this.productsRepository.save(product);
+        return this.productsORMRepository.save(product);
     }
 
-    async findAll(): Promise<Product[]> {
-        return this.productsRepository.find({ relations: ["category"] });
+    async get(): Promise<Product[]> {
+        return this.productsRepository.get();
     }
 
     findOne(sku: string): Promise<Product> {
-        return this.productsRepository.findOne({ where: { sku: sku }, relations: ["category"] });
+        return this.productsORMRepository.findOne({ where: { sku: sku }, relations: ["category"] });
     }
 
     async remove(sku: string): Promise<void> {
-        await this.productsRepository.delete({ sku: sku });
+        await this.productsORMRepository.delete({ sku: sku });
     }
 }

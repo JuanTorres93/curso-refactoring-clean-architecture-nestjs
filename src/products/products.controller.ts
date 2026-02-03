@@ -23,8 +23,8 @@ export class ProductsController {
     constructor(private readonly productsService: ProductsService) {}
 
     @Get()
-    async findAll(): Promise<ProductResponseDto[]> {
-        const products = await this.productsService.findAll();
+    async get(): Promise<ProductResponseDto[]> {
+        const products = await this.productsService.get();
 
         return plainToInstance(ProductResponseDto, products, { excludeExtraneousValues: true });
     }
