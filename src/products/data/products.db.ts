@@ -1,8 +1,8 @@
+import { CategoryDB } from "../../categories/data/categories.db";
 import { Column, Entity, Index, ManyToOne, PrimaryGeneratedColumn } from "typeorm";
-import { CategoryDB } from "../categories/data/categories.db";
 
 @Entity("products")
-export class Product {
+export class ProductDB {
     @PrimaryGeneratedColumn()
     id: number;
 

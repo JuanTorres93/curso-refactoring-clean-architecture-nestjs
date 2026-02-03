@@ -3,8 +3,9 @@ import { CategoryDB } from "../categories/data/categories.db";
 import { ProductsRepository } from "./domain/products.repository";
 import { CreateProductDto } from "./dto/create.product.dto";
 import { UpdateProductDto } from "./dto/update.product.dto";
-import { Product } from "./products.entity";
 import { ProductsError } from "./products.error";
+import { Product } from "./domain/products.entity";
+import { ProductDB } from "./data/products.db";
 
 export class ProductsService {
     constructor(
@@ -13,7 +14,7 @@ export class ProductsService {
         /**
          * @deprecated use categoriesRepository instead
          */
-        private readonly productsORMRepository: Repository<Product>,
+        private readonly productsORMRepository: Repository<ProductDB>,
 
         /**
          * @deprecated use categoriesRepository instead
@@ -21,7 +22,7 @@ export class ProductsService {
         private readonly categoriesORMRepository: Repository<CategoryDB>
     ) {}
 
-    async create(createProductDto: CreateProductDto): Promise<Product> {
+    async create(createProductDto: CreateProductDto): Promise<ProductDB> {
         const category = await this.categoriesORMRepository.findOneBy({ categoryUid: createProductDto.category });
 
         if (!category) {
@@ -34,7 +35,7 @@ export class ProductsService {
             throw new ProductsError("Duplicate SKU");
         }
 
-        const product = new Product();
+        const product = new ProductDB();
 
         product.sku = createProductDto.sku;
         product.title = createProductDto.title;
@@ -48,7 +49,7 @@ export class ProductsService {
         return this.productsORMRepository.save(product);
     }
 
-    async update(sku: string, updateProductDto: UpdateProductDto): Promise<Product> {
+    async update(sku: string, updateProductDto: UpdateProductDto): Promise<ProductDB> {
         const category = await this.categoriesORMRepository.findOneBy({ categoryUid: updateProductDto.category });
 
         if (!category) {
@@ -78,7 +79,7 @@ export class ProductsService {
         return this.productsRepository.get();
     }
 
-    findOne(sku: string): Promise<Product> {
+    findOne(sku: string): Promise<ProductDB> {
         return this.productsORMRepository.findOne({ where: { sku: sku }, relations: ["category"] });
     }
 

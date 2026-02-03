@@ -1,32 +1,32 @@
 import { Module } from "@nestjs/common";
 import { getRepositoryToken, TypeOrmModule } from "@nestjs/typeorm";
-import { Product } from "./products.entity";
+import { Repository } from "typeorm";
+import { CategoryDB } from "../categories/data/categories.db";
+import { ProductDB } from "./data/products.db";
+import { ProductORMRepository } from "./data/products.orm.repository";
 import { ProductsController } from "./products.controller";
 import { ProductsService } from "./products.service";
-import { CategoryDB } from "../categories/data/categories.db";
-import { ProductORMRepository } from "./data/products.orm.repository";
-import { Repository } from "typeorm";
 
 @Module({
-    imports: [TypeOrmModule.forFeature([Product]), TypeOrmModule.forFeature([CategoryDB])],
+    imports: [TypeOrmModule.forFeature([ProductDB]), TypeOrmModule.forFeature([CategoryDB])],
     providers: [
         {
             provide: ProductORMRepository,
-            useFactory: (repository: Repository<Product>) => {
+            useFactory: (repository: Repository<ProductDB>) => {
                 return new ProductORMRepository(repository);
             },
-            inject: [getRepositoryToken(Product)],
+            inject: [getRepositoryToken(ProductDB)],
         },
         {
             provide: ProductsService,
             useFactory: (
                 productRepository: ProductORMRepository,
-                productsRepository: Repository<Product>,
+                productsRepository: Repository<ProductDB>,
                 categoriesRepository: Repository<CategoryDB>
             ) => {
                 return new ProductsService(productRepository, productsRepository, categoriesRepository);
             },
-            inject: [ProductORMRepository, getRepositoryToken(Product), getRepositoryToken(CategoryDB)],
+            inject: [ProductORMRepository, getRepositoryToken(ProductDB), getRepositoryToken(CategoryDB)],
         },
     ],
     controllers: [ProductsController],

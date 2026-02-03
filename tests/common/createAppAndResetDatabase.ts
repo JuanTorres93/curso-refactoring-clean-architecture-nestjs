@@ -3,13 +3,13 @@ import { Test } from "@nestjs/testing";
 import { AppController } from "../../src/app/app.controller";
 import { AuthModule } from "../../src/auth/auth.module";
 import { CategoriesModule } from "../../src/categories/api/categories.module";
-import { Product } from "../../src/products/products.entity";
 import { ProductsModule } from "../../src/products/products.module";
 import { seedCategories, seedUser } from "../../src/seed/seed.data";
 import { User } from "../../src/users/user.entity";
 import { UsersModule } from "../../src/users/users.module";
 import { DataSource } from "typeorm";
 import { CategoryDB } from "../../src/categories/data/categories.db";
+import { ProductDB } from "../../src/products/data/products.db";
 
 export const createAppAndResetDatabase = async (typeORMModule: DynamicModule) => {
     const modRef = await Test.createTestingModule({
@@ -40,7 +40,7 @@ async function resetDatabase(dataSource: DataSource): Promise<void> {
 }
 
 async function deleteProducts(dataSource: DataSource) {
-    const productsRepository = dataSource.getRepository(Product);
+    const productsRepository = dataSource.getRepository(ProductDB);
     await productsRepository.delete({});
 }
 
