@@ -13,15 +13,15 @@ import {
 } from "@nestjs/common";
 import { plainToInstance } from "class-transformer";
 import { ResourceNotFoundError } from "../../common/domain/errors";
-import { GetProductsUseCase } from "../domain/get.products.usecase";
+import { GetProductsUseCase } from "../domain/use-cases/get.products.usecase";
 import { CreateProductDto } from "../dto/create.product.dto";
 import { UpdateProductDto } from "../dto/update.product.dto";
 import { ProductsError } from "../products.error";
 import { ProductsService } from "../products.service";
 import { ProductResponseDtoOld } from "../dto/response.product.dto";
 import { ProductResponseDto } from "./dto/response.product.dto";
-import { GetProductBySkuUseCase } from "../domain/get.product.bySku.usecase";
-import { DeleteProductUseCase } from "../domain/delete.product.usecase";
+import { GetProductBySkuUseCase } from "../domain/use-cases/get.product.bySku.usecase";
+import { DeleteProductUseCase } from "../domain/use-cases/delete.product.usecase";
 
 @Controller("products")
 export class ProductsController {

@@ -1,5 +1,5 @@
-import { Product } from "./products.entity";
-import { ProductsRepository } from "./products.repository";
+import { Product } from "../products.entity";
+import { ProductsRepository } from "../products.repository";
 
 export class GetProductBySkuUseCase {
     constructor(private readonly productsRepository: ProductsRepository) {}

@@ -6,9 +6,9 @@ import { ProductDB } from "../data/products.db";
 import { ProductORMRepository } from "../data/products.orm.repository";
 import { ProductsController } from "./products.controller";
 import { ProductsService } from "../products.service";
-import { GetProductsUseCase } from "../domain/get.products.usecase";
-import { GetProductBySkuUseCase } from "../domain/get.product.bySku.usecase";
-import { DeleteProductUseCase } from "../domain/delete.product.usecase";
+import { GetProductsUseCase } from "../domain/use-cases/get.products.usecase";
+import { GetProductBySkuUseCase } from "../domain/use-cases/get.product.bySku.usecase";
+import { DeleteProductUseCase } from "../domain/use-cases/delete.product.usecase";
 import { CategoryORMRepository } from "../../categories/data/categories.orm.repository";
 
 @Module({

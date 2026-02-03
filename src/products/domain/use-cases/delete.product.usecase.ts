@@ -1,5 +1,5 @@
-import { ResourceNotFoundError } from "../../common/domain/errors";
-import { ProductsRepository } from "./products.repository";
+import { ResourceNotFoundError } from "../../../common/domain/errors";
+import { ProductsRepository } from "../products.repository";
 
 export class DeleteProductUseCase {
     constructor(private readonly productsRepository: ProductsRepository) {}
