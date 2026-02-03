@@ -17,14 +17,22 @@ import { plainToInstance } from "class-transformer";
 import { UpdateProductDto } from "../dto/update.product.dto";
 import { ProductsError } from "../products.error";
 import { ProductResponseDto } from "./dto/response.product.dto";
+import { GetProductsUseCase } from "../domain/get.products.usecase";
 
 @Controller("products")
 export class ProductsController {
-    constructor(private readonly productsService: ProductsService) {}
+    constructor(
+        private readonly getProductsUseCase: GetProductsUseCase,
+
+        /**
+         * @deprecated use use cases instead of service directly
+         */
+        private readonly productsService: ProductsService
+    ) {}
 
     @Get()
     async get(): Promise<ProductResponseDto[]> {
-        const products = await this.productsService.get();
+        const products = await this.getProductsUseCase.execute();
 
         return plainToInstance(ProductResponseDto, products, { excludeExtraneousValues: true });
     }

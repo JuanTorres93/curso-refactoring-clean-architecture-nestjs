@@ -1,11 +1,10 @@
 import { Repository } from "typeorm";
 import { CategoryDB } from "../categories/data/categories.db";
+import { ProductDB } from "./data/products.db";
 import { ProductsRepository } from "./domain/products.repository";
 import { CreateProductDto } from "./dto/create.product.dto";
 import { UpdateProductDto } from "./dto/update.product.dto";
 import { ProductsError } from "./products.error";
-import { Product } from "./domain/products.entity";
-import { ProductDB } from "./data/products.db";
 
 export class ProductsService {
     constructor(
@@ -73,10 +72,6 @@ export class ProductsService {
         product.lastUpdated = new Date();
 
         return this.productsORMRepository.save(product);
-    }
-
-    async get(): Promise<Product[]> {
-        return this.productsRepository.get();
     }
 
     findOne(sku: string): Promise<ProductDB> {

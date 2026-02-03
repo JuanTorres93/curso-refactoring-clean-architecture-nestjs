@@ -6,6 +6,7 @@ import { ProductDB } from "../data/products.db";
 import { ProductORMRepository } from "../data/products.orm.repository";
 import { ProductsController } from "./products.controller";
 import { ProductsService } from "../products.service";
+import { GetProductsUseCase } from "../domain/get.products.usecase";
 
 @Module({
     imports: [TypeOrmModule.forFeature([ProductDB]), TypeOrmModule.forFeature([CategoryDB])],
@@ -27,6 +28,13 @@ import { ProductsService } from "../products.service";
                 return new ProductsService(productRepository, productsRepository, categoriesRepository);
             },
             inject: [ProductORMRepository, getRepositoryToken(ProductDB), getRepositoryToken(CategoryDB)],
+        },
+        {
+            provide: GetProductsUseCase,
+            useFactory: (productRepository: ProductORMRepository) => {
+                return new GetProductsUseCase(productRepository);
+            },
+            inject: [ProductORMRepository],
         },
     ],
     controllers: [ProductsController],
