@@ -1,6 +1,9 @@
 import { Expose, Transform } from "class-transformer";
 
-export class ProductResponseDto {
+/**
+ * @deprecated use ProductResponseDto instead
+ */
+export class ProductResponseDtoOld {
     @Expose()
     sku: string;
 
@@ -11,7 +14,7 @@ export class ProductResponseDto {
     description: string;
 
     @Expose()
-    @Transform(({ obj }) => obj.categoryUid)
+    @Transform(({ obj }) => obj.category?.categoryUid)
     category: string;
 
     @Expose()

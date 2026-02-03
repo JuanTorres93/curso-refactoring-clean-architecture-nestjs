@@ -5,6 +5,7 @@ import { ProductsRepository } from "./domain/products.repository";
 import { CreateProductDto } from "./dto/create.product.dto";
 import { UpdateProductDto } from "./dto/update.product.dto";
 import { ProductsError } from "./products.error";
+import { Product } from "./domain/products.entity";
 
 export class ProductsService {
     constructor(
@@ -74,8 +75,16 @@ export class ProductsService {
         return this.productsORMRepository.save(product);
     }
 
+    /**
+     *
+     * @deprecated use productsRepository instead
+     */
     findOne(sku: string): Promise<ProductDB> {
         return this.productsORMRepository.findOne({ where: { sku: sku }, relations: ["category"] });
+    }
+
+    getBySku(sku: string): Promise<Product> {
+        return this.productsRepository.getBySku(sku);
     }
 
     async remove(sku: string): Promise<void> {

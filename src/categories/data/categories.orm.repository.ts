@@ -1,5 +1,6 @@
+import { ResourceNotFoundError } from "../../common/domain/errors";
 import { Category } from "../domain/categories.entity";
-import { CategoriesRepository, ResourceNotFoundError } from "../domain/categories.repository";
+import { CategoriesRepository } from "../domain/categories.repository";
 import { CategoryDB } from "./categories.db";
 
 export class CategoryORMRepository implements CategoriesRepository {

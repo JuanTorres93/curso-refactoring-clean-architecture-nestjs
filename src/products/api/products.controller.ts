@@ -11,13 +11,15 @@ import {
     Post,
     Put,
 } from "@nestjs/common";
-import { CreateProductDto } from "../dto/create.product.dto";
-import { ProductsService } from "../products.service";
 import { plainToInstance } from "class-transformer";
+import { ResourceNotFoundError } from "../../common/domain/errors";
+import { GetProductsUseCase } from "../domain/get.products.usecase";
+import { CreateProductDto } from "../dto/create.product.dto";
 import { UpdateProductDto } from "../dto/update.product.dto";
 import { ProductsError } from "../products.error";
+import { ProductsService } from "../products.service";
+import { ProductResponseDtoOld } from "../dto/response.product.dto";
 import { ProductResponseDto } from "./dto/response.product.dto";
-import { GetProductsUseCase } from "../domain/get.products.usecase";
 
 @Controller("products")
 export class ProductsController {
@@ -38,22 +40,26 @@ export class ProductsController {
     }
 
     @Get(":sku")
-    async findOne(@Param("sku") sku: string): Promise<ProductResponseDto> {
-        const product = await this.productsService.findOne(sku);
+    async getBySku(@Param("sku") sku: string): Promise<ProductResponseDto> {
+        try {
+            const product = await this.productsService.getBySku(sku);
 
-        if (!product) {
-            throw new NotFoundException();
+            return plainToInstance(ProductResponseDto, product, { excludeExtraneousValues: true });
+        } catch (error) {
+            if (error instanceof ResourceNotFoundError) {
+                throw new NotFoundException(error.message);
+            }
+
+            throw error;
         }
-
-        return plainToInstance(ProductResponseDto, product, { excludeExtraneousValues: true });
     }
 
     @Post()
-    async create(@Body() createProductDto: CreateProductDto): Promise<ProductResponseDto> {
+    async create(@Body() createProductDto: CreateProductDto): Promise<ProductResponseDtoOld> {
         try {
             const product = await this.productsService.create(createProductDto);
 
-            return plainToInstance(ProductResponseDto, product, { excludeExtraneousValues: true });
+            return plainToInstance(ProductResponseDtoOld, product, { excludeExtraneousValues: true });
         } catch (error) {
             if (error instanceof ProductsError) {
                 throw new BadRequestException(error.message);
@@ -64,7 +70,10 @@ export class ProductsController {
     }
 
     @Put(":sku")
-    async update(@Param("sku") sku: string, @Body() updateProductDto: UpdateProductDto): Promise<ProductResponseDto> {
+    async update(
+        @Param("sku") sku: string,
+        @Body() updateProductDto: UpdateProductDto
+    ): Promise<ProductResponseDtoOld> {
         try {
             const product = await this.productsService.findOne(sku);
 
@@ -74,7 +83,7 @@ export class ProductsController {
 
             const updatedProduct = await this.productsService.update(sku, updateProductDto);
 
-            return plainToInstance(ProductResponseDto, updatedProduct, { excludeExtraneousValues: true });
+            return plainToInstance(ProductResponseDtoOld, updatedProduct, { excludeExtraneousValues: true });
         } catch (error) {
             if (error instanceof ProductsError) {
                 throw new BadRequestException(error.message);
