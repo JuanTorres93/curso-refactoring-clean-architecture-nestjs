@@ -10,6 +10,7 @@ import { GetProductsUseCase } from "../domain/use-cases/get.products.usecase";
 import { GetProductBySkuUseCase } from "../domain/use-cases/get.product.bySku.usecase";
 import { DeleteProductUseCase } from "../domain/use-cases/delete.product.usecase";
 import { CategoryORMRepository } from "../../categories/data/categories.orm.repository";
+import { CreateProductUseCase } from "../domain/use-cases/create.product.usecase";
 
 @Module({
     imports: [TypeOrmModule.forFeature([ProductDB]), TypeOrmModule.forFeature([CategoryDB])],
@@ -70,6 +71,13 @@ import { CategoryORMRepository } from "../../categories/data/categories.orm.repo
                 return new DeleteProductUseCase(productRepository);
             },
             inject: [ProductORMRepository],
+        },
+        {
+            provide: CreateProductUseCase,
+            useFactory: (productRepository: ProductORMRepository, categoryRepository: CategoryORMRepository) => {
+                return new CreateProductUseCase(productRepository, categoryRepository);
+            },
+            inject: [ProductORMRepository, CategoryORMRepository],
         },
     ],
     controllers: [ProductsController],

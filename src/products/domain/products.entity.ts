@@ -1,4 +1,4 @@
-type ProductProps = {
+export type ProductProps = {
     sku: string;
     title: string;
     description: string;
