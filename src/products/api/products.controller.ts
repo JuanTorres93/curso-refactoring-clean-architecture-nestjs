@@ -11,12 +11,12 @@ import {
     Post,
     Put,
 } from "@nestjs/common";
-import { CreateProductDto } from "./dto/create.product.dto";
-import { ProductsService } from "./products.service";
+import { CreateProductDto } from "../dto/create.product.dto";
+import { ProductsService } from "../products.service";
 import { plainToInstance } from "class-transformer";
+import { UpdateProductDto } from "../dto/update.product.dto";
+import { ProductsError } from "../products.error";
 import { ProductResponseDto } from "./dto/response.product.dto";
-import { UpdateProductDto } from "./dto/update.product.dto";
-import { ProductsError } from "./products.error";
 
 @Controller("products")
 export class ProductsController {

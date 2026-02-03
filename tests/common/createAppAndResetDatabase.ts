@@ -3,7 +3,7 @@ import { Test } from "@nestjs/testing";
 import { AppController } from "../../src/app/app.controller";
 import { AuthModule } from "../../src/auth/auth.module";
 import { CategoriesModule } from "../../src/categories/api/categories.module";
-import { ProductsModule } from "../../src/products/products.module";
+import { ProductsModule } from "../../src/products/api/products.module";
 import { seedCategories, seedUser } from "../../src/seed/seed.data";
 import { User } from "../../src/users/user.entity";
 import { UsersModule } from "../../src/users/users.module";

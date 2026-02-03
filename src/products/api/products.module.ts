@@ -1,11 +1,11 @@
 import { Module } from "@nestjs/common";
 import { getRepositoryToken, TypeOrmModule } from "@nestjs/typeorm";
 import { Repository } from "typeorm";
-import { CategoryDB } from "../categories/data/categories.db";
-import { ProductDB } from "./data/products.db";
-import { ProductORMRepository } from "./data/products.orm.repository";
+import { CategoryDB } from "../../categories/data/categories.db";
+import { ProductDB } from "../data/products.db";
+import { ProductORMRepository } from "../data/products.orm.repository";
 import { ProductsController } from "./products.controller";
-import { ProductsService } from "./products.service";
+import { ProductsService } from "../products.service";
 
 @Module({
     imports: [TypeOrmModule.forFeature([ProductDB]), TypeOrmModule.forFeature([CategoryDB])],
