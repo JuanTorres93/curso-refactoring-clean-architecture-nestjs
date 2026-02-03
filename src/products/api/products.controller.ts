@@ -21,12 +21,14 @@ import { ProductsService } from "../products.service";
 import { ProductResponseDtoOld } from "../dto/response.product.dto";
 import { ProductResponseDto } from "./dto/response.product.dto";
 import { GetProductBySkuUseCase } from "../domain/get.product.bySku.usecase";
+import { DeleteProductUseCase } from "../domain/delete.product.usecase";
 
 @Controller("products")
 export class ProductsController {
     constructor(
         private readonly getProductsUseCase: GetProductsUseCase,
         private readonly getProductBySkuUseCase: GetProductBySkuUseCase,
+        private readonly deleteProductUseCase: DeleteProductUseCase,
 
         /**
          * @deprecated use use cases instead of service directly
@@ -48,11 +50,7 @@ export class ProductsController {
 
             return plainToInstance(ProductResponseDto, product, { excludeExtraneousValues: true });
         } catch (error) {
-            if (error instanceof ResourceNotFoundError) {
-                throw new NotFoundException(error.message);
-            }
-
-            throw error;
+            this.handleError(error);
         }
     }
 
@@ -99,14 +97,20 @@ export class ProductsController {
 
     @Delete(":sku")
     async delete(@Param("sku") sku: string): Promise<{ message: string }> {
-        const product = await this.productsService.findOne(sku);
+        try {
+            await this.deleteProductUseCase.execute(sku);
 
-        if (!product) {
+            return { message: `Product with SKU ${sku} has been successfully deleted` };
+        } catch (error) {
+            this.handleError(error);
+        }
+    }
+
+    private handleError(error: Error): never {
+        if (error instanceof ResourceNotFoundError) {
             throw new NotFoundException();
         }
 
-        await this.productsService.delete(sku);
-
-        return { message: `Product with SKU ${sku} has been successfully deleted` };
+        throw error;
     }
 }

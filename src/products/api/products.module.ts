@@ -8,6 +8,7 @@ import { ProductsController } from "./products.controller";
 import { ProductsService } from "../products.service";
 import { GetProductsUseCase } from "../domain/get.products.usecase";
 import { GetProductBySkuUseCase } from "../domain/get.product.bySku.usecase";
+import { DeleteProductUseCase } from "../domain/delete.product.usecase";
 
 @Module({
     imports: [TypeOrmModule.forFeature([ProductDB]), TypeOrmModule.forFeature([CategoryDB])],
@@ -41,6 +42,13 @@ import { GetProductBySkuUseCase } from "../domain/get.product.bySku.usecase";
             provide: GetProductBySkuUseCase,
             useFactory: (productRepository: ProductORMRepository) => {
                 return new GetProductBySkuUseCase(productRepository);
+            },
+            inject: [ProductORMRepository],
+        },
+        {
+            provide: DeleteProductUseCase,
+            useFactory: (productRepository: ProductORMRepository) => {
+                return new DeleteProductUseCase(productRepository);
             },
             inject: [ProductORMRepository],
         },

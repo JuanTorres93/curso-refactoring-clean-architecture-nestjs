@@ -81,8 +81,4 @@ export class ProductsService {
     findOne(sku: string): Promise<ProductDB> {
         return this.productsORMRepository.findOne({ where: { sku: sku }, relations: ["category"] });
     }
-
-    async delete(sku: string): Promise<void> {
-        await this.productsRepository.delete(sku);
-    }
 }
