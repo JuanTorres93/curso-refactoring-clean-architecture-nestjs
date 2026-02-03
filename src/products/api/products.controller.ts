@@ -55,11 +55,11 @@ export class ProductsController {
     }
 
     @Post()
-    async create(@Body() createProductDto: CreateProductDto): Promise<ProductResponseDtoOld> {
+    async create(@Body() createProductDto: CreateProductDto): Promise<ProductResponseDto> {
         try {
             const product = await this.productsService.create(createProductDto);
 
-            return plainToInstance(ProductResponseDtoOld, product, { excludeExtraneousValues: true });
+            return plainToInstance(ProductResponseDto, product, { excludeExtraneousValues: true });
         } catch (error) {
             if (error instanceof ProductsError) {
                 throw new BadRequestException(error.message);

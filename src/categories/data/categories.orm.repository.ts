@@ -20,6 +20,15 @@ export class CategoryORMRepository implements CategoriesRepository {
         return this.mapToEntity(categoryDB);
     }
 
+    async existsById(uid: string): Promise<boolean> {
+        try {
+            await this.getById(uid);
+            return true;
+        } catch {
+            return false;
+        }
+    }
+
     private mapToEntity(categoryDB: CategoryDB): Category {
         return new Category({
             categoryUid: categoryDB.categoryUid,

@@ -9,6 +9,7 @@ import { ProductsService } from "../products.service";
 import { GetProductsUseCase } from "../domain/get.products.usecase";
 import { GetProductBySkuUseCase } from "../domain/get.product.bySku.usecase";
 import { DeleteProductUseCase } from "../domain/delete.product.usecase";
+import { CategoryORMRepository } from "../../categories/data/categories.orm.repository";
 
 @Module({
     imports: [TypeOrmModule.forFeature([ProductDB]), TypeOrmModule.forFeature([CategoryDB])],
@@ -21,15 +22,33 @@ import { DeleteProductUseCase } from "../domain/delete.product.usecase";
             inject: [getRepositoryToken(ProductDB)],
         },
         {
+            provide: CategoryORMRepository,
+            useFactory: () => {
+                return new CategoryORMRepository();
+            },
+            inject: [getRepositoryToken(CategoryDB)],
+        },
+        {
             provide: ProductsService,
             useFactory: (
                 productRepository: ProductORMRepository,
+                categoryRepository: CategoryORMRepository,
                 productsRepository: Repository<ProductDB>,
                 categoriesRepository: Repository<CategoryDB>
             ) => {
-                return new ProductsService(productRepository, productsRepository, categoriesRepository);
+                return new ProductsService(
+                    productRepository,
+                    categoryRepository,
+                    productsRepository,
+                    categoriesRepository
+                );
             },
-            inject: [ProductORMRepository, getRepositoryToken(ProductDB), getRepositoryToken(CategoryDB)],
+            inject: [
+                ProductORMRepository,
+                CategoryORMRepository,
+                getRepositoryToken(ProductDB),
+                getRepositoryToken(CategoryDB),
+            ],
         },
         {
             provide: GetProductsUseCase,

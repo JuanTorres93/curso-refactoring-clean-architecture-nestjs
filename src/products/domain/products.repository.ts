@@ -4,4 +4,6 @@ export interface ProductsRepository {
     get(): Promise<Product[]>;
     getBySku(sku: string): Promise<Product>;
     delete(sku: string): Promise<void>;
+    save(product: Product): Promise<Product>;
+    existsBySku(sku: string): Promise<boolean>;
 }

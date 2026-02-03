@@ -1,14 +1,25 @@
 import { Repository } from "typeorm";
 import { CategoryDB } from "../categories/data/categories.db";
+import { CategoriesRepository } from "../categories/domain/categories.repository";
 import { ProductDB } from "./data/products.db";
+import { Product } from "./domain/products.entity";
 import { ProductsRepository } from "./domain/products.repository";
-import { CreateProductDto } from "./dto/create.product.dto";
 import { UpdateProductDto } from "./dto/update.product.dto";
 import { ProductsError } from "./products.error";
+
+export type CreateProductParams = {
+    sku: string;
+    title: string;
+    description?: string;
+    category?: string;
+    image?: string;
+    price: number;
+};
 
 export class ProductsService {
     constructor(
         private readonly productsRepository: ProductsRepository,
+        private readonly categoriesRepository: CategoriesRepository,
 
         /**
          * @deprecated use categoriesRepository instead
@@ -21,31 +32,31 @@ export class ProductsService {
         private readonly categoriesORMRepository: Repository<CategoryDB>
     ) {}
 
-    async create(createProductDto: CreateProductDto): Promise<ProductDB> {
-        const category = await this.categoriesORMRepository.findOneBy({ categoryUid: createProductDto.category });
+    async create(params: CreateProductParams): Promise<Product> {
+        const categoryExists = await this.categoriesRepository.existsById(params.category);
 
-        if (!category) {
+        if (!categoryExists) {
             throw new ProductsError("Category not found");
         }
 
-        const existedProduct = await this.productsORMRepository.findOneBy({ sku: createProductDto.sku });
+        const productExists = await this.productsRepository.existsBySku(params.sku);
 
-        if (existedProduct) {
+        if (productExists) {
             throw new ProductsError("Duplicate SKU");
         }
 
-        const product = new ProductDB();
+        const product = new Product({
+            sku: params.sku,
+            title: params.title,
+            description: params.description,
+            categoryUid: params.category,
+            image: params.image,
+            price: params.price,
+            createdDate: new Date(),
+            lastUpdated: new Date(),
+        });
 
-        product.sku = createProductDto.sku;
-        product.title = createProductDto.title;
-        product.description = createProductDto.description;
-        product.category = category;
-        product.image = createProductDto.image;
-        product.price = createProductDto.price;
-        product.createdDate = new Date();
-        product.lastUpdated = new Date();
-
-        return this.productsORMRepository.save(product);
+        return this.productsRepository.save(product);
     }
 
     async update(sku: string, updateProductDto: UpdateProductDto): Promise<ProductDB> {
