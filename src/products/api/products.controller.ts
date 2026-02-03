@@ -14,7 +14,7 @@ import {
 import { plainToInstance } from "class-transformer";
 import { ResourceNotFoundError, ValidationDomainError } from "../../common/domain/errors";
 import { GetProductsUseCase } from "../domain/use-cases/get.products.usecase";
-import { CreateProductDto } from "../dto/create.product.dto";
+import { CreateProductDto } from "./dto/create.product.dto";
 import { UpdateProductDto } from "../dto/update.product.dto";
 import { ProductsError } from "../products.error";
 import { ProductsService } from "../products.service";

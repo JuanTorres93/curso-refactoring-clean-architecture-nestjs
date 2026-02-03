@@ -13,7 +13,7 @@ export class CreateProductUseCase {
         private readonly categoriesRepository: CategoriesRepository
     ) {}
 
-    async execute(params: CreateProductParams): Promise<Product> {
+    async execute(params: CreateProductParams): Promise<ProductProps> {
         const categoryExists = await this.categoriesRepository.existsById(params.category);
 
         if (!categoryExists) {
@@ -37,6 +37,8 @@ export class CreateProductUseCase {
             lastUpdated: new Date(),
         });
 
-        return this.productsRepository.save(product);
+        const savedProduct = await this.productsRepository.save(product);
+
+        return savedProduct.toProps();
     }
 }

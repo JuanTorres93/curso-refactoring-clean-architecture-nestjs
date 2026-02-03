@@ -29,4 +29,17 @@ export class Product {
         this.createdDate = props.createdDate;
         this.lastUpdated = props.lastUpdated;
     }
+
+    toProps(): ProductProps {
+        return {
+            sku: this.sku,
+            title: this.title,
+            description: this.description,
+            categoryUid: this.categoryUid,
+            image: this.image,
+            price: this.price,
+            createdDate: this.createdDate,
+            lastUpdated: this.lastUpdated,
+        };
+    }
 }
