@@ -77,6 +77,38 @@ describe("Produc entity", () => {
                 "title must be at least 3 characters long"
             );
         });
+
+        it("should throw an error for description too long", async () => {
+            const invalidData = { ...validProductData, description: "a".repeat(10001) };
+
+            const result = captureError(() => Product.create(invalidData));
+            expect(result).toBeInstanceOf(ValidationMultipleErrors);
+            expect((result as ValidationMultipleErrors).errors).toContainEqual(
+                "description must not exceed 10000 characters"
+            );
+        });
+
+        it("should accept empty description (optional)", async () => {
+            const validData = { ...validProductData, description: "" };
+            const product = Product.create(validData);
+            expect(product).toBeInstanceOf(Product);
+            expect(product.toProps().description).toBe("");
+        });
+
+        it("should throw multiple errors for invalid SKU, title and description", async () => {
+            const invalidData = { ...validProductData, sku: "", title: "ab", description: "a".repeat(10001) };
+
+            const result = captureError(() => Product.create(invalidData));
+            expect(result).toBeInstanceOf(ValidationMultipleErrors);
+            expect((result as ValidationMultipleErrors).errors).toHaveLength(3);
+            expect((result as ValidationMultipleErrors).errors).toContainEqual("sku should not be empty");
+            expect((result as ValidationMultipleErrors).errors).toContainEqual(
+                "title must be at least 3 characters long"
+            );
+            expect((result as ValidationMultipleErrors).errors).toContainEqual(
+                "description must not exceed 10000 characters"
+            );
+        });
     });
 });
 

@@ -1,11 +1,12 @@
 import { ValidationMultipleErrors } from "../../common/domain/errors";
 import { SKU } from "./value-objects/sku.value.object";
 import { Title } from "./value-objects/title.value.object";
+import { Description } from "./value-objects/description.value.object";
 
 export type ProductProps = {
     sku: string;
     title: string;
-    description: string;
+    description?: string;
     categoryUid: string;
     image: string;
     price: number;
@@ -13,15 +14,16 @@ export type ProductProps = {
     lastUpdated: Date;
 };
 
-type ProductEntityProps = Omit<ProductProps, "sku" | "title"> & {
+type ProductEntityProps = Omit<ProductProps, "sku" | "title" | "description"> & {
     sku: SKU;
     title: Title;
+    description?: Description;
 };
 
 export class Product {
     public readonly sku: SKU;
     public readonly title: Title;
-    public readonly description: string;
+    public readonly description?: Description;
     public readonly categoryUid: string;
     public readonly image: string;
     public readonly price: number;
@@ -42,8 +44,12 @@ export class Product {
     public static create(data: ProductProps): Product {
         const [skuError, sku] = this.validateValueObject(SKU.create, data.sku);
         const [titleError, title] = this.validateValueObject(Title.create, data.title);
+        const [descriptionError, description] =
+            data.description !== undefined
+                ? this.validateValueObject(Description.create, data.description)
+                : [null, undefined];
 
-        const errors = [skuError, titleError].filter(Boolean);
+        const errors = [skuError, titleError, descriptionError].filter(Boolean);
 
         if (errors.length > 0) {
             throw new ValidationMultipleErrors(errors);
@@ -53,6 +59,7 @@ export class Product {
             ...data,
             sku,
             title,
+            description,
         });
     }
 
@@ -61,7 +68,7 @@ export class Product {
         return {
             sku: this.sku.value,
             title: this.title.value,
-            description: this.description,
+            description: this.description.value,
             categoryUid: this.categoryUid,
             image: this.image,
             price: this.price,
