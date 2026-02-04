@@ -12,7 +12,7 @@ import {
     Put,
 } from "@nestjs/common";
 import { plainToInstance } from "class-transformer";
-import { ResourceNotFoundError, ValidationDomainError } from "../../common/domain/errors";
+import { ResourceNotFoundError, ValidationDomainError, ValidationMultipleErrors } from "../../common/domain/errors";
 import { GetProductsUseCase } from "../domain/use-cases/get.products.usecase";
 import { CreateProductDto } from "./dto/create.product.dto";
 import { UpdateProductDto } from "../dto/update.product.dto";
@@ -109,6 +109,8 @@ export class ProductsController {
             throw new NotFoundException();
         } else if (error instanceof ValidationDomainError) {
             throw new BadRequestException(error.message);
+        } else if (error instanceof ValidationMultipleErrors) {
+            throw new BadRequestException(error.errors);
         }
 
         throw error;

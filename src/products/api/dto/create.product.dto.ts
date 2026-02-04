@@ -1,9 +1,7 @@
-import { IsNotEmpty, IsNumber, IsOptional, IsString, IsUrl, Length, Matches, Max, Min } from "class-validator";
+import { IsNotEmpty, IsNumber, IsOptional, IsString, IsUrl, Length, Max, Min } from "class-validator";
 
 export class CreateProductDto {
     @IsString()
-    @Matches(/^[a-zA-Z0-9]{3}_[a-zA-Z0-9]{3}_[a-zA-Z0-9]{2}$/, { message: "Invalid SKU format (must be ###_###_##)" })
-    @IsNotEmpty()
     sku: string;
 
     @IsString()

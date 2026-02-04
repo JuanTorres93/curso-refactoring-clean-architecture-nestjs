@@ -26,7 +26,7 @@ export class CreateProductUseCase {
             throw new ValidationDomainError("Duplicate SKU");
         }
 
-        const product = new Product({
+        const product = Product.create({
             sku: params.sku,
             title: params.title,
             description: params.description,

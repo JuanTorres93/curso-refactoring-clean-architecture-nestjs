@@ -61,7 +61,7 @@ export class ProductORMRepository implements ProductsRepository {
     }
 
     private mapToEntity(dbProduct: ProductDB): Product {
-        return new Product({
+        return Product.create({
             sku: dbProduct.sku,
             title: dbProduct.title,
             description: dbProduct.description,
@@ -76,7 +76,7 @@ export class ProductORMRepository implements ProductsRepository {
     private mapToDB(product: Product, categoryDB: CategoryDB): ProductDB {
         const productDB = new ProductDB();
 
-        productDB.sku = product.sku;
+        productDB.sku = product.sku.value;
         productDB.title = product.title;
         productDB.description = product.description;
         productDB.category = categoryDB;
