@@ -39,6 +39,44 @@ describe("Produc entity", () => {
                 "Invalid SKU format (must be ###_###_##)"
             );
         });
+
+        it("should throw an error for empty title", async () => {
+            const invalidData = { ...validProductData, title: "" };
+
+            const result = captureError(() => Product.create(invalidData));
+            expect(result).toBeInstanceOf(ValidationMultipleErrors);
+            expect((result as ValidationMultipleErrors).errors).toContainEqual("title should not be empty");
+        });
+
+        it("should throw an error for title too short", async () => {
+            const invalidData = { ...validProductData, title: "ab" };
+
+            const result = captureError(() => Product.create(invalidData));
+            expect(result).toBeInstanceOf(ValidationMultipleErrors);
+            expect((result as ValidationMultipleErrors).errors).toContainEqual(
+                "title must be at least 3 characters long"
+            );
+        });
+
+        it("should throw an error for title too long", async () => {
+            const invalidData = { ...validProductData, title: "a".repeat(256) };
+
+            const result = captureError(() => Product.create(invalidData));
+            expect(result).toBeInstanceOf(ValidationMultipleErrors);
+            expect((result as ValidationMultipleErrors).errors).toContainEqual("title must not exceed 255 characters");
+        });
+
+        it("should throw multiple errors for invalid SKU and title", async () => {
+            const invalidData = { ...validProductData, sku: "", title: "ab" };
+
+            const result = captureError(() => Product.create(invalidData));
+            expect(result).toBeInstanceOf(ValidationMultipleErrors);
+            expect((result as ValidationMultipleErrors).errors).toHaveLength(2);
+            expect((result as ValidationMultipleErrors).errors).toContainEqual("sku should not be empty");
+            expect((result as ValidationMultipleErrors).errors).toContainEqual(
+                "title must be at least 3 characters long"
+            );
+        });
     });
 });
 

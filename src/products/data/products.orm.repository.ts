@@ -77,7 +77,7 @@ export class ProductORMRepository implements ProductsRepository {
         const productDB = new ProductDB();
 
         productDB.sku = product.sku.value;
-        productDB.title = product.title;
+        productDB.title = product.title.value;
         productDB.description = product.description;
         productDB.category = categoryDB;
         productDB.image = product.image;

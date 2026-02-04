@@ -5,8 +5,6 @@ export class CreateProductDto {
     sku: string;
 
     @IsString()
-    @IsNotEmpty()
-    @Length(0, 255)
     title: string;
 
     @IsString()

@@ -1,4 +1,3 @@
-import e from "express";
 import { SKU } from "../sku.value.object";
 
 describe("SKU value object", () => {

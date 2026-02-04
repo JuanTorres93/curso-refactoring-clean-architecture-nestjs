@@ -1,5 +1,6 @@
 import { ValidationMultipleErrors } from "../../common/domain/errors";
 import { SKU } from "./value-objects/sku.value.object";
+import { Title } from "./value-objects/title.value.object";
 
 export type ProductProps = {
     sku: string;
@@ -12,13 +13,14 @@ export type ProductProps = {
     lastUpdated: Date;
 };
 
-type ProductEntityProps = Omit<ProductProps, "sku"> & {
+type ProductEntityProps = Omit<ProductProps, "sku" | "title"> & {
     sku: SKU;
+    title: Title;
 };
 
 export class Product {
     public readonly sku: SKU;
-    public readonly title: string;
+    public readonly title: Title;
     public readonly description: string;
     public readonly categoryUid: string;
     public readonly image: string;
@@ -38,15 +40,19 @@ export class Product {
     }
 
     public static create(data: ProductProps): Product {
-        const [skuError, sku] = this.validateSku(data.sku);
+        const [skuError, sku] = this.validateValueObject(SKU.create, data.sku);
+        const [titleError, title] = this.validateValueObject(Title.create, data.title);
 
-        if (skuError) {
-            throw new ValidationMultipleErrors([skuError]);
+        const errors = [skuError, titleError].filter(Boolean);
+
+        if (errors.length > 0) {
+            throw new ValidationMultipleErrors(errors);
         }
 
         return new Product({
             ...data,
             sku,
+            title,
         });
     }
 
@@ -54,7 +60,7 @@ export class Product {
         // TODO NEXT: Vídeo 49, minuto 21, acaba de poner el .value aquí abajo en el sku
         return {
             sku: this.sku.value,
-            title: this.title,
+            title: this.title.value,
             description: this.description,
             categoryUid: this.categoryUid,
             image: this.image,
@@ -64,9 +70,9 @@ export class Product {
         };
     }
 
-    private static validateSku(sku: string): [string, SKU] {
+    private static validateValueObject<T>(create: (value: string) => T, value: string): [string, T] {
         try {
-            return [null, SKU.create(sku)];
+            return [null, create(value)];
         } catch (error) {
             return [error.message, null];
         }

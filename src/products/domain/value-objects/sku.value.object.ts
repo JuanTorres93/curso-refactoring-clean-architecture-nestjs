@@ -1,3 +1,4 @@
+import { ValidationDomainError } from "../../../common/domain/errors";
 import { ValueObject } from "./value.object";
 
 export interface SKUProps {
@@ -16,11 +17,11 @@ export class SKU extends ValueObject<SKUProps> {
 
     public static create(value: string): SKU {
         if (!value || value.trim() === "") {
-            throw new Error("sku should not be empty");
+            throw new ValidationDomainError("sku should not be empty");
         }
 
         if (!skuRegex.test(value)) {
-            throw new Error("Invalid SKU format (must be ###_###_##)");
+            throw new ValidationDomainError("Invalid SKU format (must be ###_###_##)");
         }
 
         return new SKU({ value: value.trim() });
