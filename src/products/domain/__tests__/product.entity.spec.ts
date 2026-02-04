@@ -147,6 +147,78 @@ describe("Produc entity", () => {
             );
             expect((result as ValidationMultipleErrors).errors).toContainEqual("image must be a URL address");
         });
+
+        it("should throw an error for negative price", async () => {
+            const invalidData = { ...validProductData, price: -1 };
+
+            const result = captureError(() => Product.create(invalidData));
+            expect(result).toBeInstanceOf(ValidationMultipleErrors);
+            expect((result as ValidationMultipleErrors).errors).toContainEqual("price must not be less than 0");
+        });
+
+        it("should throw an error for price exceeding maximum", async () => {
+            const invalidData = { ...validProductData, price: 10000 };
+
+            const result = captureError(() => Product.create(invalidData));
+            expect(result).toBeInstanceOf(ValidationMultipleErrors);
+            expect((result as ValidationMultipleErrors).errors).toContainEqual("price must not exceed 9999.99");
+        });
+
+        it("should throw an error for price with more than 2 decimal places", async () => {
+            const invalidData = { ...validProductData, price: 29.999 };
+
+            const result = captureError(() => Product.create(invalidData));
+            expect(result).toBeInstanceOf(ValidationMultipleErrors);
+            expect((result as ValidationMultipleErrors).errors).toContainEqual(
+                "price must have a maximum of 2 decimal places"
+            );
+        });
+
+        it("should throw an error for null price", async () => {
+            const invalidData = { ...validProductData, price: null };
+
+            const result = captureError(() => Product.create(invalidData));
+            expect(result).toBeInstanceOf(ValidationMultipleErrors);
+            expect((result as ValidationMultipleErrors).errors).toContainEqual("price is required");
+        });
+
+        it("should accept zero price", async () => {
+            const validData = { ...validProductData, price: 0 };
+            const product = Product.create(validData);
+            expect(product).toBeInstanceOf(Product);
+            expect(product.toProps().price).toBe(0);
+        });
+
+        it("should accept price with exactly 2 decimal places", async () => {
+            const validData = { ...validProductData, price: 1234.56 };
+            const product = Product.create(validData);
+            expect(product).toBeInstanceOf(Product);
+            expect(product.toProps().price).toBe(1234.56);
+        });
+
+        it("should throw multiple errors for all invalid fields including price", async () => {
+            const invalidData = {
+                ...validProductData,
+                sku: "",
+                title: "ab",
+                description: "a".repeat(10001),
+                image: "not-a-url",
+                price: -5,
+            };
+
+            const result = captureError(() => Product.create(invalidData));
+            expect(result).toBeInstanceOf(ValidationMultipleErrors);
+            expect((result as ValidationMultipleErrors).errors).toHaveLength(5);
+            expect((result as ValidationMultipleErrors).errors).toContainEqual("sku should not be empty");
+            expect((result as ValidationMultipleErrors).errors).toContainEqual(
+                "title must be at least 3 characters long"
+            );
+            expect((result as ValidationMultipleErrors).errors).toContainEqual(
+                "description must not exceed 10000 characters"
+            );
+            expect((result as ValidationMultipleErrors).errors).toContainEqual("image must be a URL address");
+            expect((result as ValidationMultipleErrors).errors).toContainEqual("price must not be less than 0");
+        });
     });
 });
 

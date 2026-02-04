@@ -16,8 +16,6 @@ export class CreateProductDto {
     @IsString()
     image: string;
 
-    @IsNumber({ maxDecimalPlaces: 2 }, { message: "Price must be a number with a maximum of 2 decimal places" })
-    @Min(0)
-    @Max(9999.99)
+    @IsNumber()
     price: number;
 }

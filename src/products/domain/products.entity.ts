@@ -3,6 +3,7 @@ import { SKU } from "./value-objects/sku.value.object";
 import { Title } from "./value-objects/title.value.object";
 import { Description } from "./value-objects/description.value.object";
 import { Image } from "./value-objects/image.value.object";
+import { Price } from "./value-objects/price.value.object";
 
 export type ProductProps = {
     sku: string;
@@ -15,11 +16,12 @@ export type ProductProps = {
     lastUpdated: Date;
 };
 
-type ProductEntityProps = Omit<ProductProps, "sku" | "title" | "description" | "image"> & {
+type ProductEntityProps = Omit<ProductProps, "sku" | "title" | "description" | "image" | "price"> & {
     sku: SKU;
     title: Title;
     description?: Description;
     image?: Image;
+    price: Price;
 };
 
 export class Product {
@@ -28,7 +30,7 @@ export class Product {
     public readonly description?: Description;
     public readonly categoryUid: string;
     public readonly image?: Image;
-    public readonly price: number;
+    public readonly price: Price;
     public readonly createdDate: Date;
     public readonly lastUpdated: Date;
 
@@ -52,8 +54,9 @@ export class Product {
                 : [null, undefined];
         const [imageError, image] =
             data.image !== undefined ? this.validateValueObject(Image.create, data.image) : [null, undefined];
+        const [priceError, price] = this.validateValueObject(Price.create, data.price);
 
-        const errors = [skuError, titleError, descriptionError, imageError].filter(Boolean);
+        const errors = [skuError, titleError, descriptionError, imageError, priceError].filter(Boolean);
 
         if (errors.length > 0) {
             throw new ValidationMultipleErrors(errors);
@@ -65,6 +68,7 @@ export class Product {
             title,
             description,
             image,
+            price,
         });
     }
 
@@ -75,13 +79,13 @@ export class Product {
             description: this.description.value,
             categoryUid: this.categoryUid,
             image: this.image.value,
-            price: this.price,
+            price: this.price.value,
             createdDate: this.createdDate,
             lastUpdated: this.lastUpdated,
         };
     }
 
-    private static validateValueObject<T>(create: (value: string) => T, value: string): [string, T] {
+    private static validateValueObject<T>(create: (value: unknown) => T, value: unknown): [string, T] {
         try {
             return [null, create(value)];
         } catch (error) {

@@ -81,7 +81,7 @@ export class ProductORMRepository implements ProductsRepository {
         productDB.description = product.description.value;
         productDB.category = categoryDB;
         productDB.image = product.image.value;
-        productDB.price = product.price;
+        productDB.price = product.price.value;
         productDB.createdDate = product.createdDate;
         productDB.lastUpdated = product.lastUpdated;
 
