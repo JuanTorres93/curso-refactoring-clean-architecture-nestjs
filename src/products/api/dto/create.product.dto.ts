@@ -1,4 +1,4 @@
-import { IsNumber, IsOptional, IsString, IsUrl, Max, Min } from "class-validator";
+import { IsNumber, IsString, Max, Min } from "class-validator";
 
 export class CreateProductDto {
     @IsString()
@@ -8,16 +8,12 @@ export class CreateProductDto {
     title: string;
 
     @IsString()
-    @IsOptional()
     description: string;
 
     @IsString()
-    @IsOptional()
     category: string;
 
     @IsString()
-    @IsUrl()
-    @IsOptional()
     image: string;
 
     @IsNumber({ maxDecimalPlaces: 2 }, { message: "Price must be a number with a maximum of 2 decimal places" })

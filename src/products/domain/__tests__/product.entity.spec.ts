@@ -109,6 +109,44 @@ describe("Produc entity", () => {
                 "description must not exceed 10000 characters"
             );
         });
+
+        it("should throw an error for invalid image URL", async () => {
+            const invalidData = { ...validProductData, image: "not-a-url" };
+
+            const result = captureError(() => Product.create(invalidData));
+            expect(result).toBeInstanceOf(ValidationMultipleErrors);
+            expect((result as ValidationMultipleErrors).errors).toContainEqual("image must be a URL address");
+        });
+
+        it("should throw an error for image without protocol", async () => {
+            const invalidData = { ...validProductData, image: "example.com/image.jpg" };
+
+            const result = captureError(() => Product.create(invalidData));
+            expect(result).toBeInstanceOf(ValidationMultipleErrors);
+            expect((result as ValidationMultipleErrors).errors).toContainEqual("image must be a URL address");
+        });
+
+        it("should throw multiple errors for all invalid fields", async () => {
+            const invalidData = {
+                ...validProductData,
+                sku: "",
+                title: "ab",
+                description: "a".repeat(10001),
+                image: "not-a-url",
+            };
+
+            const result = captureError(() => Product.create(invalidData));
+            expect(result).toBeInstanceOf(ValidationMultipleErrors);
+            expect((result as ValidationMultipleErrors).errors).toHaveLength(4);
+            expect((result as ValidationMultipleErrors).errors).toContainEqual("sku should not be empty");
+            expect((result as ValidationMultipleErrors).errors).toContainEqual(
+                "title must be at least 3 characters long"
+            );
+            expect((result as ValidationMultipleErrors).errors).toContainEqual(
+                "description must not exceed 10000 characters"
+            );
+            expect((result as ValidationMultipleErrors).errors).toContainEqual("image must be a URL address");
+        });
     });
 });
 

@@ -2,6 +2,7 @@ import { ValidationMultipleErrors } from "../../common/domain/errors";
 import { SKU } from "./value-objects/sku.value.object";
 import { Title } from "./value-objects/title.value.object";
 import { Description } from "./value-objects/description.value.object";
+import { Image } from "./value-objects/image.value.object";
 
 export type ProductProps = {
     sku: string;
@@ -14,10 +15,11 @@ export type ProductProps = {
     lastUpdated: Date;
 };
 
-type ProductEntityProps = Omit<ProductProps, "sku" | "title" | "description"> & {
+type ProductEntityProps = Omit<ProductProps, "sku" | "title" | "description" | "image"> & {
     sku: SKU;
     title: Title;
     description?: Description;
+    image?: Image;
 };
 
 export class Product {
@@ -25,7 +27,7 @@ export class Product {
     public readonly title: Title;
     public readonly description?: Description;
     public readonly categoryUid: string;
-    public readonly image: string;
+    public readonly image?: Image;
     public readonly price: number;
     public readonly createdDate: Date;
     public readonly lastUpdated: Date;
@@ -48,8 +50,10 @@ export class Product {
             data.description !== undefined
                 ? this.validateValueObject(Description.create, data.description)
                 : [null, undefined];
+        const [imageError, image] =
+            data.image !== undefined ? this.validateValueObject(Image.create, data.image) : [null, undefined];
 
-        const errors = [skuError, titleError, descriptionError].filter(Boolean);
+        const errors = [skuError, titleError, descriptionError, imageError].filter(Boolean);
 
         if (errors.length > 0) {
             throw new ValidationMultipleErrors(errors);
@@ -60,17 +64,17 @@ export class Product {
             sku,
             title,
             description,
+            image,
         });
     }
 
     toProps(): ProductProps {
-        // TODO NEXT: Vídeo 49, minuto 21, acaba de poner el .value aquí abajo en el sku
         return {
             sku: this.sku.value,
             title: this.title.value,
             description: this.description.value,
             categoryUid: this.categoryUid,
-            image: this.image,
+            image: this.image.value,
             price: this.price,
             createdDate: this.createdDate,
             lastUpdated: this.lastUpdated,
