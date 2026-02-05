@@ -15,8 +15,8 @@ import { CreateProductUseCase } from "../domain/use-cases/create.product.usecase
 import { DeleteProductUseCase } from "../domain/use-cases/delete.product.usecase";
 import { GetProductBySkuUseCase } from "../domain/use-cases/get.product.bySku.usecase";
 import { GetProductsUseCase } from "../domain/use-cases/get.products.usecase";
-import { UpdateProductDto } from "../dto/update.product.dto";
-import { ProductsService } from "../products.service";
+import { UpdateProductUseCase } from "../domain/use-cases/update.product.usecase";
+import { UpdateProductDto } from "./dto/update.product.dto";
 import { CreateProductDto } from "./dto/create.product.dto";
 import { ProductResponseDto } from "./dto/response.product.dto";
 
@@ -27,11 +27,7 @@ export class ProductsController {
         private readonly getProductBySkuUseCase: GetProductBySkuUseCase,
         private readonly deleteProductUseCase: DeleteProductUseCase,
         private readonly createProductUseCase: CreateProductUseCase,
-
-        /**
-         * @deprecated use use cases instead of service directly
-         */
-        private readonly productsService: ProductsService
+        private readonly updateProductUseCase: UpdateProductUseCase
     ) {}
 
     @Get()
@@ -66,7 +62,7 @@ export class ProductsController {
     @Put(":sku")
     async update(@Param("sku") sku: string, @Body() updateProductDto: UpdateProductDto): Promise<ProductResponseDto> {
         try {
-            const updatedProduct = await this.productsService.update(sku, updateProductDto);
+            const updatedProduct = await this.updateProductUseCase.execute(sku, updateProductDto);
 
             return plainToInstance(ProductResponseDto, updatedProduct, { excludeExtraneousValues: true });
         } catch (error) {

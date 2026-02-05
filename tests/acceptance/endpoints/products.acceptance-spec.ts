@@ -359,7 +359,7 @@ describe("Products endpoint", () => {
                 .send({ ...product, price: 30000 })
                 .expect(400)
                 .expect(({ body }) => {
-                    expect(body.message[0]).toBe("price must not be greater than 9999.99");
+                    expect(body.message[0]).toBe("price must not exceed 9999.99");
                 });
         });
 

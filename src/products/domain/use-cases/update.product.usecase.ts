@@ -1,24 +1,19 @@
-import { CategoriesRepository } from "../categories/domain/categories.repository";
-import { ResourceNotFoundError, ValidationDomainError } from "../common/domain/errors";
-import { ProductProps } from "./domain/products.entity";
-import { ProductsRepository } from "./domain/products.repository";
+import { CategoriesRepository } from "../../../categories/domain/categories.repository";
+import { ResourceNotFoundError, ValidationDomainError } from "../../../common/domain/errors";
+import { ProductProps } from "../products.entity";
+import { ProductsRepository } from "../products.repository";
 
-export type UpdateProductParams = {
-    sku: string;
-    title: string;
-    description?: string;
-    category?: string;
-    image?: string;
-    price: number;
+export type UpdateProductParams = Pick<ProductProps, "sku" | "title" | "description" | "image" | "price"> & {
+    category: string;
 };
 
-export class ProductsService {
+export class UpdateProductUseCase {
     constructor(
         private readonly productsRepository: ProductsRepository,
         private readonly categoriesRepository: CategoriesRepository
     ) {}
 
-    async update(sku: string, params: UpdateProductParams): Promise<ProductProps> {
+    async execute(sku: string, params: UpdateProductParams): Promise<ProductProps> {
         const existsProduct = await this.productsRepository.getBySku(sku);
 
         if (!existsProduct) {
