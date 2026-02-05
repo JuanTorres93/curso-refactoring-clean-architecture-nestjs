@@ -12,16 +12,18 @@ export type ProductProps = {
     categoryUid: string;
     image: string;
     price: number;
-    createdDate: Date;
-    lastUpdated: Date;
+    createdDate?: Date;
+    lastUpdated?: Date;
 };
 
-type ProductEntityProps = Omit<ProductProps, "sku" | "title" | "description" | "image" | "price"> & {
+type ProductEntityProps = Pick<ProductProps, "categoryUid"> & {
     sku: SKU;
     title: Title;
     description?: Description;
     image?: Image;
     price: Price;
+    createdDate: Date;
+    lastUpdated: Date;
 };
 
 export class Product {
@@ -62,6 +64,9 @@ export class Product {
             throw new ValidationMultipleErrors(errors);
         }
 
+        const createdDate = data.createdDate || new Date();
+        const lastUpdated = data.lastUpdated || new Date();
+
         return new Product({
             ...data,
             sku,
@@ -69,6 +74,8 @@ export class Product {
             description,
             image,
             price,
+            createdDate,
+            lastUpdated,
         });
     }
 

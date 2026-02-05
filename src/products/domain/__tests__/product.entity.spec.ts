@@ -19,6 +19,27 @@ describe("Produc entity", () => {
             expect(product).toBeInstanceOf(Product);
             expect(product.toProps()).toEqual(validProductData);
         });
+
+        it("should create a product with valid createdDate and lastUpdate in props", async () => {
+            const product = Product.create(validProductData);
+
+            expect(product).toBeInstanceOf(Product);
+            expect(product.createdDate).toEqual(validProductData.createdDate);
+            expect(product.lastUpdated).toEqual(validProductData.lastUpdated);
+        });
+
+        it("should create a product with current date for createdDate and lastUpdated if not provided", async () => {
+            const product = Product.create({
+                ...validProductData,
+                createdDate: undefined,
+                lastUpdated: undefined,
+            });
+
+            expect(product).toBeInstanceOf(Product);
+            const now = new Date();
+            expect(product.createdDate.getTime()).toBeLessThanOrEqual(now.getTime());
+            expect(product.lastUpdated.getTime()).toBeLessThanOrEqual(now.getTime());
+        });
     });
 
     describe("validation errors", () => {

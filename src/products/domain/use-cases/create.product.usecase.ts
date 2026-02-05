@@ -33,8 +33,6 @@ export class CreateProductUseCase {
             categoryUid: params.category,
             image: params.image,
             price: params.price,
-            createdDate: new Date(),
-            lastUpdated: new Date(),
         });
 
         const savedProduct = await this.productsRepository.save(product);
