@@ -48,6 +48,17 @@ export class Product {
     }
 
     public static create(data: ProductProps): Product {
+        return Product.validateAndCreate(data);
+    }
+
+    public update(data: ProductProps): Product {
+        return Product.validateAndCreate({
+            ...data,
+            lastUpdated: new Date(),
+        });
+    }
+
+    private static validateAndCreate(data: ProductProps) {
         const [skuError, sku] = this.validateValueObject(SKU.create, data.sku);
         const [titleError, title] = this.validateValueObject(Title.create, data.title);
         const [descriptionError, description] =

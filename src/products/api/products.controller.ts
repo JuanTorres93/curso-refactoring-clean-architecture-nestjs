@@ -4,8 +4,6 @@ import {
     Controller,
     Delete,
     Get,
-    HttpException,
-    InternalServerErrorException,
     NotFoundException,
     Param,
     Post,
@@ -13,16 +11,14 @@ import {
 } from "@nestjs/common";
 import { plainToInstance } from "class-transformer";
 import { ResourceNotFoundError, ValidationDomainError, ValidationMultipleErrors } from "../../common/domain/errors";
-import { GetProductsUseCase } from "../domain/use-cases/get.products.usecase";
-import { CreateProductDto } from "./dto/create.product.dto";
-import { UpdateProductDto } from "../dto/update.product.dto";
-import { ProductsError } from "../products.error";
-import { ProductsService } from "../products.service";
-import { ProductResponseDtoOld } from "../dto/response.product.dto";
-import { ProductResponseDto } from "./dto/response.product.dto";
-import { GetProductBySkuUseCase } from "../domain/use-cases/get.product.bySku.usecase";
-import { DeleteProductUseCase } from "../domain/use-cases/delete.product.usecase";
 import { CreateProductUseCase } from "../domain/use-cases/create.product.usecase";
+import { DeleteProductUseCase } from "../domain/use-cases/delete.product.usecase";
+import { GetProductBySkuUseCase } from "../domain/use-cases/get.product.bySku.usecase";
+import { GetProductsUseCase } from "../domain/use-cases/get.products.usecase";
+import { UpdateProductDto } from "../dto/update.product.dto";
+import { ProductsService } from "../products.service";
+import { CreateProductDto } from "./dto/create.product.dto";
+import { ProductResponseDto } from "./dto/response.product.dto";
 
 @Controller("products")
 export class ProductsController {
@@ -68,28 +64,13 @@ export class ProductsController {
     }
 
     @Put(":sku")
-    async update(
-        @Param("sku") sku: string,
-        @Body() updateProductDto: UpdateProductDto
-    ): Promise<ProductResponseDtoOld> {
+    async update(@Param("sku") sku: string, @Body() updateProductDto: UpdateProductDto): Promise<ProductResponseDto> {
         try {
-            const product = await this.productsService.findOne(sku);
-
-            if (!product) {
-                throw new NotFoundException();
-            }
-
             const updatedProduct = await this.productsService.update(sku, updateProductDto);
 
-            return plainToInstance(ProductResponseDtoOld, updatedProduct, { excludeExtraneousValues: true });
+            return plainToInstance(ProductResponseDto, updatedProduct, { excludeExtraneousValues: true });
         } catch (error) {
-            if (error instanceof ProductsError) {
-                throw new BadRequestException(error.message);
-            } else if (error instanceof HttpException) {
-                throw error;
-            } else {
-                throw new InternalServerErrorException();
-            }
+            this.handleError(error);
         }
     }
 

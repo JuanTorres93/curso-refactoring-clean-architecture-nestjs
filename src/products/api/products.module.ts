@@ -31,25 +31,10 @@ import { CreateProductUseCase } from "../domain/use-cases/create.product.usecase
         },
         {
             provide: ProductsService,
-            useFactory: (
-                productRepository: ProductORMRepository,
-                categoryRepository: CategoryORMRepository,
-                productsRepository: Repository<ProductDB>,
-                categoriesRepository: Repository<CategoryDB>
-            ) => {
-                return new ProductsService(
-                    productRepository,
-                    categoryRepository,
-                    productsRepository,
-                    categoriesRepository
-                );
+            useFactory: (productRepository: ProductORMRepository, categoryRepository: CategoryORMRepository) => {
+                return new ProductsService(productRepository, categoryRepository);
             },
-            inject: [
-                ProductORMRepository,
-                CategoryORMRepository,
-                getRepositoryToken(ProductDB),
-                getRepositoryToken(CategoryDB),
-            ],
+            inject: [ProductORMRepository, CategoryORMRepository],
         },
         {
             provide: GetProductsUseCase,

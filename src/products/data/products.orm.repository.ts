@@ -44,7 +44,13 @@ export class ProductORMRepository implements ProductsRepository {
             throw new ResourceNotFoundError(`Category not found`);
         }
 
+        const existingProductDB = await this.productsRepository.findOneBy({ sku: product.sku.value });
+
         const productDB = this.mapToDB(product, categoryDB);
+
+        if (existingProductDB) {
+            productDB.id = existingProductDB.id;
+        }
 
         const savedProductDB = await this.productsRepository.save(productDB);
 

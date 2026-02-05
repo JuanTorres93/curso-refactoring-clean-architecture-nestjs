@@ -1,13 +1,9 @@
-import { Repository } from "typeorm";
-import { CategoryDB } from "../categories/data/categories.db";
 import { CategoriesRepository } from "../categories/domain/categories.repository";
-import { ProductDB } from "./data/products.db";
-import { Product } from "./domain/products.entity";
+import { ResourceNotFoundError, ValidationDomainError } from "../common/domain/errors";
+import { ProductProps } from "./domain/products.entity";
 import { ProductsRepository } from "./domain/products.repository";
-import { UpdateProductDto } from "./dto/update.product.dto";
-import { ProductsError } from "./products.error";
 
-export type CreateProductParams = {
+export type UpdateProductParams = {
     sku: string;
     title: string;
     description?: string;
@@ -19,50 +15,43 @@ export type CreateProductParams = {
 export class ProductsService {
     constructor(
         private readonly productsRepository: ProductsRepository,
-        private readonly categoriesRepository: CategoriesRepository,
-
-        /**
-         * @deprecated use categoriesRepository instead
-         */
-        private readonly productsORMRepository: Repository<ProductDB>,
-
-        /**
-         * @deprecated use categoriesRepository instead
-         */
-        private readonly categoriesORMRepository: Repository<CategoryDB>
+        private readonly categoriesRepository: CategoriesRepository
     ) {}
 
-    async update(sku: string, updateProductDto: UpdateProductDto): Promise<ProductDB> {
-        const category = await this.categoriesORMRepository.findOneBy({ categoryUid: updateProductDto.category });
+    async update(sku: string, params: UpdateProductParams): Promise<ProductProps> {
+        const existsProduct = await this.productsRepository.getBySku(sku);
+
+        if (!existsProduct) {
+            throw new ResourceNotFoundError("Product not found");
+        }
+
+        const category = await this.categoriesRepository.existsById(params.category);
 
         if (!category) {
-            throw new ProductsError("Category not found");
+            throw new ValidationDomainError("Category not found");
         }
 
-        const existedProduct = await this.productsORMRepository.findOneBy({ sku: updateProductDto.sku });
+        if (params.sku !== sku) {
+            const existSkuToUpdate = await this.productsRepository.existsBySku(params.sku);
 
-        if (existedProduct && sku != updateProductDto.sku) {
-            throw new ProductsError("Duplicate SKU");
+            if (existSkuToUpdate) {
+                throw new ValidationDomainError("Duplicate SKU");
+            }
         }
 
-        const product = await this.productsORMRepository.findOneBy({ sku: sku });
+        const product = await this.productsRepository.getBySku(sku);
 
-        product.sku = updateProductDto.sku;
-        product.title = updateProductDto.title;
-        product.description = updateProductDto.description;
-        product.category = category;
-        product.image = updateProductDto.image;
-        product.price = updateProductDto.price;
-        product.lastUpdated = new Date();
+        const editedProduct = product.update({
+            sku: params.sku,
+            title: params.title,
+            description: params.description,
+            categoryUid: params.category,
+            image: params.image,
+            price: params.price,
+        });
 
-        return this.productsORMRepository.save(product);
-    }
+        const savedProduct = await this.productsRepository.save(editedProduct);
 
-    /**
-     *
-     * @deprecated use productsRepository instead
-     */
-    findOne(sku: string): Promise<ProductDB> {
-        return this.productsORMRepository.findOne({ where: { sku: sku }, relations: ["category"] });
+        return savedProduct.toProps();
     }
 }
